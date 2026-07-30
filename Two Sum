@@ -1,0 +1,46 @@
+#include <stdlib.h>
+
+#define MAP_SIZE 20011
+
+typedef struct {
+    int key;
+    int value;
+    int used;
+} HashItem;
+
+int getHash(int key) {
+    int h = key % MAP_SIZE;
+    return h < 0 ? h + MAP_SIZE : h;
+}
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    *returnSize = 2;
+    int* result = (int*)malloc(2 * sizeof(int));
+    HashItem* map = (HashItem*)calloc(MAP_SIZE, sizeof(HashItem));
+
+    for (int i = 0; i < numsSize; i++) {
+        int diff = target - nums[i];
+        int h = getHash(diff);
+
+        while (map[h].used) {
+            if (map[h].key == diff) {
+                result[0] = map[h].value;
+                result[1] = i;
+                free(map);
+                return result;
+            }
+            h = (h + 1) % MAP_SIZE;
+        }
+
+        h = getHash(nums[i]);
+        while (map[h].used) {
+            h = (h + 1) % MAP_SIZE;
+        }
+        map[h].key = nums[i];
+        map[h].value = i;
+        map[h].used = 1;
+    }
+
+    free(map);
+    return result;
+}
