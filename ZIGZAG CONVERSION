@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* convert(char* s, int numRows) {
+    if (!s) return NULL;
+
+    int len = strlen(s);
+
+    // If numRows is 1 or string length is less than or equal to numRows,
+    // the zigzag pattern is identical to the original string.
+    if (numRows <= 1 || len <= numRows) {
+        char* result = (char*)malloc((len + 1) * sizeof(char));
+        strcpy(result, s);
+        return result;
+    }
+
+    char* result = (char*)malloc((len + 1) * sizeof(char));
+    int cycleLen = 2 * numRows - 2;
+    int index = 0;
+
+    // Traverse row by row
+    for (int r = 0; r < numRows; r++) {
+        for (int j = 0; j + r < len; j += cycleLen) {
+            // Append the primary character for row 'r' in current cycle
+            result[index++] = s[j + r];
+
+            // For interior rows, append the diagonal character in current cycle
+            if (r != 0 && r != numRows - 1 && j + cycleLen - r < len) {
+                result[index++] = s[j + cycleLen - r];
+            }
+        }
+    }
+
+    result[len] = '\0';
+    return result;
+}
