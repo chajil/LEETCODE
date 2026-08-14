@@ -1,0 +1,27 @@
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+int maxArea(int* height, int heightSize) {
+    int left = 0;
+    int right = heightSize - 1;
+    int max_water = 0;
+
+    while (left < right) {
+        int h = MIN(height[left], height[right]);
+        int w = right - left;
+        int current_area = h * w;
+
+        if (current_area > max_water) {
+            max_water = current_area;
+        }
+
+        // Move the pointer at the shorter wall, as moving the taller wall 
+        // could never increase area (width decreases, height bounded by shorter wall)
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+
+    return max_water;
+}
